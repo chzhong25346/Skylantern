@@ -2,7 +2,7 @@ import pandas as pd
 import datetime as dt
 from ..utils.fetch import fetch_index#, get_daily_adjusted
 from ..utils.util import gen_id
-from ..models import Index, Quote#, Report, Transaction, Holding
+from ..models import Index, Quote, Report, Transaction, Holding
 import logging
 logger = logging.getLogger('main.mapping')
 
@@ -47,62 +47,58 @@ def map_fix_quote(sr, ticker):
         )
     return model_instance
 
-#
-# def map_report(config,df):
-#     date = dt.datetime.today().strftime("%Y-%m-%d")
-#     df_records = df.to_dict('records')
-#     model_instnaces = [Report(
-#         symbol = record['symbol'],
-#         date = date,
-#         id = gen_id(record['symbol']+str(date)),
-#         yr_high = record['yr_high'],
-#         yr_low = record['yr_low'],
-#         downtrend = record['downtrend'],
-#         uptrend = record['uptrend'],
-#         high_volume = record['high_volume'],
-#         rsi = record['rsi'],
-#         macd = record['macd'],
-#         bolling = record['bolling'],
-#         # low_volume = record['low_volume'],
-#         # pattern = record['pattern'],
-#         # support = record['support'],
-#         # volume_price = record['volume_price']
-#     ) for record in df_records]
-#     logger.info('Mapping completed.')
-#
-#     return model_instnaces
-#
-#
-# def map_transaction(df):
-#     date = dt.datetime.today().strftime("%Y-%m-%d")
-#     df_records = df.to_dict('records')
-#     model_instnaces = [Transaction(
-#         id = gen_id(record['symbol'] + record['type'] + str(date)),
-#         date = date,
-#         symbol = record['symbol'],
-#         price = record['price'],
-#         quantity = record['quantity'],
-#         settlement = record['settlement'],
-#         type = record['type'],
-#     ) for record in df_records]
-#     logger.info('Mapping completed.')
-#
-#     return model_instnaces
-#
-#
-# def map_holding(df):
-#     df_records = df.to_dict('records')
-#     model_instnaces = [Holding(
-#         symbol = record['symbol'],
-#         avg_cost  = record['avg_cost'],
-#         quantity = record['quantity'],
-#         book_value  = record['book_value'],
-#         change_dollar  = record['change_dollar'],
-#         change_percent  = record['change_percent'],
-#         mkt_price  = record['mkt_price'],
-#         mkt_value  = record['mkt_value'],
-#         note  = record['note'],
-#     ) for record in df_records]
-#     logger.info('Mapping completed.')
-#
-#     return model_instnaces
+
+def map_report(config,df):
+    date = dt.datetime.today().strftime("%Y-%m-%d")
+    df_records = df.to_dict('records')
+    model_instnaces = [Report(
+        symbol = record['symbol'],
+        date = date,
+        id = gen_id(record['symbol']+str(date)),
+        yr_high = record['yr_high'],
+        yr_low = record['yr_low'],
+        downtrend = record['downtrend'],
+        uptrend = record['uptrend'],
+        high_volume = record['high_volume'],
+        rsi = record['rsi'],
+        macd = record['macd'],
+        bolling = record['bolling'],
+    ) for record in df_records]
+    logger.info('Mapping completed.')
+
+    return model_instnaces
+
+
+def map_transaction(df):
+    date = dt.datetime.today().strftime("%Y-%m-%d")
+    df_records = df.to_dict('records')
+    model_instnaces = [Transaction(
+        id = gen_id(record['symbol'] + record['type'] + str(date)),
+        date = date,
+        symbol = record['symbol'],
+        price = record['price'],
+        quantity = record['quantity'],
+        settlement = record['settlement'],
+        type = record['type'],
+    ) for record in df_records]
+    logger.info('Mapping completed.')
+
+    return model_instnaces
+
+
+def map_holding(df):
+    df_records = df.to_dict('records')
+    model_instnaces = [Holding(
+        symbol = record['symbol'],
+        avg_cost  = record['avg_cost'],
+        quantity = record['quantity'],
+        book_value  = record['book_value'],
+        change_dollar  = record['change_dollar'],
+        change_percent  = record['change_percent'],
+        mkt_price  = record['mkt_price'],
+        mkt_value  = record['mkt_value'],
+        note  = record['note'],
+    ) for record in df_records]
+    logger.info('Mapping completed.')
+
+    return model_instnaces

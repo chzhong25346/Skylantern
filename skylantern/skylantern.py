@@ -3,8 +3,10 @@ from .utils.fetch import get_daily_adjusted, fetchError
 from .utils.util import missing_ticker
 from .db.db import Db
 from .db.write import bulk_save, insert_onebyone, writeError, foundDup
-from .db.mapping import map_index, map_quote, map_fix_quote#, map_report
+from .db.mapping import map_index, map_quote, map_fix_quote, map_report
 from .db.read import read_ticker, has_index
+from .report.report import report
+from .simulation.simulator import simulator
 import logging
 import logging.config
 import getopt
@@ -56,7 +58,12 @@ def main(argv):
                 type = 'full' # fixing requires full data
                 today_only = False
                 update(type, today_only, index_name, fix='fastfix')  # Compact update for today
-
+        elif opt in ("-r", "--report"):  # Report
+            index_name = argv[1]
+            analyze(index_name)
+        elif opt in ("-s", "--simulate"): # Simulate
+            index_name = argv[1]
+            simulate(index_name)
 
     elapsed = math.ceil((time.time() - time_start)/60)
     logger.info("%s took %d minutes to run" % ( (',').join(argv), elapsed ) )
@@ -72,12 +79,9 @@ def update(type, today_only, index_name, fix=False):
     db.create_all()
     if has_index(s) == None:
         bulk_save(s, map_index(index_name))
-
     tickerL = read_ticker(s)
-
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
-
     for ticker in tickerL:
     # for ticker in ['000001.SZ']: # Fast fix a ticker
         try:
@@ -111,4 +115,30 @@ def update(type, today_only, index_name, fix=False):
             logger.error("%s - (%s,%s)" % (e.value, index_name, ticker))
         except:
             logger.error("Updating failed - (index_name,%s)" % (index_name,ticker))
+    s.close()
+
+
+def analyze(index_name):
+    logger.info('Run Task: [Reporting]')
+    Config.DB_NAME=index_name
+    db = Db(Config)
+    s = db.session()
+    e = db.get_engine()
+    # Create table based on Models
+    db.create_all()
+    df = report(s)
+    model_list = map_report(Config,df)  ####CHECKPOINT
+    bulk_save(s, model_list)  ####CHECKPOINT
+    s.close()
+
+
+def simulate(index_name):
+    logger.info('Run Task: [Simulation]')
+    Config.DB_NAME=index_name
+    db = Db(Config)
+    s = db.session()
+    e = db.get_engine()
+    # Create table based on Models
+    db.create_all()
+    simulator(s)
     s.close()
