@@ -36,6 +36,7 @@ class Report(db.Model):
     rsi = db.Column(db.String(4), nullable=True)
     macd = db.Column(db.String(4), nullable=True)
     bolling = db.Column(db.String(10), nullable=True)
+    adx = db.Column(db.String(4), nullable=True)
 
 
 class Holding(db.Model):

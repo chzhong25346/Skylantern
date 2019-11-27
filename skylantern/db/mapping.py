@@ -63,6 +63,7 @@ def map_report(config,df):
         rsi = record['rsi'],
         macd = record['macd'],
         bolling = record['bolling'],
+        adx = record['adx'],
     ) for record in df_records]
     logger.info('Mapping completed.')
 
