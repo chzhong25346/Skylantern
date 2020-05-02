@@ -7,6 +7,7 @@ from .db.mapping import map_index, map_quote, map_fix_quote, map_report
 from .db.read import read_ticker, has_index
 from .report.report import report
 from .simulation.simulator import simulator
+from .learning.updateEIA import updateEIA
 import logging
 import logging.config
 import getopt
@@ -20,19 +21,19 @@ logger = logging.getLogger('main')
 def main(argv):
     time_start = time.time()
     try:
-        opts, args = getopt.getopt(argv,"u:rse",["update=", "report=", "simulate=", "emailing="])
+        opts, args = getopt.getopt(argv,"u:rsa",["update=", "report=", "simulate=", "eia="])
     except getopt.GetoptError:
         print('run.py -u <full|compact|fastfix|slowfix> <csi300>')
         print('run.py -r <csi300>')
         print('run.py -s <csi300>')
-        print('run.py -e')
+        print('run.py -a')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print('run.py -u <full|compact|fastfix|slowfix>  <csi300>')
             print('run.py -r <csi300>')
             print('run.py -s <csi300>')
-            print('run.py -e')
+            print('run.py -a')
             sys.exit()
         elif (opt == '-u' and len(argv) != 3):
             print('run.py -u <full|compact|fastfix|slowfix>  <csi300>')
@@ -64,6 +65,8 @@ def main(argv):
         elif opt in ("-s", "--simulate"): # Simulate
             index_name = argv[1]
             simulate(index_name)
+        elif opt in ("-a", "--eia"): # Update EIA data
+            eia()
 
     elapsed = math.ceil((time.time() - time_start)/60)
     logger.info("%s took %d minutes to run" % ( (',').join(argv), elapsed ) )
@@ -141,4 +144,16 @@ def simulate(index_name):
     # Create table based on Models
     db.create_all()
     simulator(s)
+    s.close()
+
+
+def eia():
+    logger.info('Run Task: [EIA]')
+    Config.DB_NAME='learning'
+    db = Db(Config)
+    s = db.session()
+    e = db.get_engine()
+    # Create table based on Models
+    db.create_all()
+    updateEIA(s)
     s.close()

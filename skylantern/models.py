@@ -61,3 +61,21 @@ class Transaction(db.Model):
     quantity = db.Column(db.BIGINT, nullable=True)
     settlement = db.Column(db.Float, nullable=True)
     type = db.Column(db.String(6), nullable=False)
+
+
+# EIA Models
+class Eia_price(db.Model):
+    __tablename__ = 'eia_price'
+    id = db.Column(db.String(40), unique=True, nullable=False, primary_key=True)
+    sid = db.Column(db.String(50), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    value = db.Column(db.Float, nullable=True)
+
+
+# EIA Models
+class Eia_storage(db.Model):
+    __tablename__ = 'eia_storage'
+    id = db.Column(db.String(40), unique=True, nullable=False, primary_key=True)
+    sid = db.Column(db.String(50), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    value = db.Column(db.BIGINT, nullable=True)

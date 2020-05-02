@@ -2,7 +2,7 @@ import pandas as pd
 import datetime as dt
 from ..utils.fetch import fetch_index#, get_daily_adjusted
 from ..utils.util import gen_id
-from ..models import Index, Quote, Report, Transaction, Holding
+from ..models import Index, Quote, Report, Transaction, Holding, Eia_price, Eia_storage
 import logging
 logger = logging.getLogger('main.mapping')
 
@@ -99,6 +99,34 @@ def map_holding(df):
         mkt_price  = record['mkt_price'],
         mkt_value  = record['mkt_value'],
         note  = record['note'],
+    ) for record in df_records]
+    logger.info('Mapping completed.')
+
+    return model_instnaces
+
+
+# Eia_price
+def map_eia_price(df, sid):
+    df_records = df.to_dict('records')
+    model_instnaces = [Eia_price(
+        id = gen_id(sid + str(record['date'])),
+        sid = sid,
+        date = record['date'],
+        value = record['value'],
+    ) for record in df_records]
+    logger.info('Mapping completed.')
+
+    return model_instnaces
+
+
+# Eia_price
+def map_eia_storage(df, sid):
+    df_records = df.to_dict('records')
+    model_instnaces = [Eia_storage(
+        id = gen_id(sid + str(record['date'])),
+        sid = sid,
+        date = record['date'],
+        value = record['value'],
     ) for record in df_records]
     logger.info('Mapping completed.')
 
