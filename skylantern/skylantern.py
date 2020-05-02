@@ -21,19 +21,19 @@ logger = logging.getLogger('main')
 def main(argv):
     time_start = time.time()
     try:
-        opts, args = getopt.getopt(argv,"u:rsa",["update=", "report=", "simulate=", "eia="])
+        opts, args = getopt.getopt(argv,"u:rse",["update=", "report=", "simulate=", "eia="])
     except getopt.GetoptError:
         print('run.py -u <full|compact|fastfix|slowfix> <csi300>')
         print('run.py -r <csi300>')
         print('run.py -s <csi300>')
-        print('run.py -a')
+        print('run.py -e')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
             print('run.py -u <full|compact|fastfix|slowfix>  <csi300>')
             print('run.py -r <csi300>')
             print('run.py -s <csi300>')
-            print('run.py -a')
+            print('run.py -e')
             sys.exit()
         elif (opt == '-u' and len(argv) != 3):
             print('run.py -u <full|compact|fastfix|slowfix>  <csi300>')
@@ -65,7 +65,7 @@ def main(argv):
         elif opt in ("-s", "--simulate"): # Simulate
             index_name = argv[1]
             simulate(index_name)
-        elif opt in ("-a", "--eia"): # Update EIA data
+        elif opt in ("-e", "--eia"): # Update EIA data
             eia()
 
     elapsed = math.ceil((time.time() - time_start)/60)
