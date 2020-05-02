@@ -21,13 +21,16 @@ def bulk_save(session, model_list):
 
 
 def insert_onebyone(session, model_list):
-    for model in model_list:
+    for idx, model in enumerate(model_list):
         try:
             session.add(model)
             session.commit()
         except Exception as e:
             session.rollback()
-            pass
+            if idx > 0:
+                raise foundDup('%s row(s) written' % str(idx+1))
+            else:
+                raise foundDup('Found duplicate')
 
 
 class writeError(Exception):
