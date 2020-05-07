@@ -49,7 +49,7 @@ def fetchEIA(series_ID, update=True):
     try:
         sr = Series(series_ID)
         if update:
-            data = sr.last(5)['series'][0]['data']
+            data = sr.last(20)['series'][0]['data']
         else:
             data = sr.get_data(all_data=True)['series'][0]['data']
         df = pd.DataFrame.from_records(data, columns=['date','value'])
