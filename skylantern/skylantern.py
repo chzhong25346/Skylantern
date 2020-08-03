@@ -8,6 +8,7 @@ from .db.read import read_ticker, has_index
 from .report.report import report
 from .simulation.simulator import simulator
 from .learning.updateEIA import updateEIA
+from .models import Index, Quote, Report, Holding, Transaction, Eia_price, Eia_storage
 import logging
 import logging.config
 import getopt
@@ -79,7 +80,13 @@ def update(type, today_only, index_name, fix=False):
     s = db.session()
     e = db.get_engine()
     # Create table based on Models
-    db.create_all()
+    # db.create_all()
+    Index.__table__.create(s.get_bind(), checkfirst=True)
+    Quote.__table__.create(s.get_bind(), checkfirst=True)
+    Report.__table__.create(s.get_bind(), checkfirst=True)
+    Holding.__table__.create(s.get_bind(), checkfirst=True)
+    Transaction.__table__.create(s.get_bind(), checkfirst=True)
+    
     if has_index(s) == None:
         bulk_save(s, map_index(index_name))
     tickerL = read_ticker(s)
@@ -128,7 +135,12 @@ def analyze(index_name):
     s = db.session()
     e = db.get_engine()
     # Create table based on Models
-    db.create_all()
+    # db.create_all()
+    Index.__table__.create(s.get_bind(), checkfirst=True)
+    Quote.__table__.create(s.get_bind(), checkfirst=True)
+    Report.__table__.create(s.get_bind(), checkfirst=True)
+    Holding.__table__.create(s.get_bind(), checkfirst=True)
+    Transaction.__table__.create(s.get_bind(), checkfirst=True)
     df = report(s)
     model_list = map_report(Config,df)  ####CHECKPOINT
     bulk_save(s, model_list)  ####CHECKPOINT
@@ -142,7 +154,12 @@ def simulate(index_name):
     s = db.session()
     e = db.get_engine()
     # Create table based on Models
-    db.create_all()
+    # db.create_all()
+    Index.__table__.create(s.get_bind(), checkfirst=True)
+    Quote.__table__.create(s.get_bind(), checkfirst=True)
+    Report.__table__.create(s.get_bind(), checkfirst=True)
+    Holding.__table__.create(s.get_bind(), checkfirst=True)
+    Transaction.__table__.create(s.get_bind(), checkfirst=True)
     simulator(s)
     s.close()
 
@@ -154,6 +171,8 @@ def eia():
     s = db.session()
     e = db.get_engine()
     # Create table based on Models
-    db.create_all()
+    # db.create_all()
+    Eia_price.__table__.create(s.get_bind(), checkfirst=True)
+    Eia_storage.__table__.create(s.get_bind(), checkfirst=True)
     updateEIA(s)
     s.close()
