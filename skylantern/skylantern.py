@@ -1,5 +1,5 @@
 from .utils.config import Config
-from .utils.fetch import get_daily_adjusted, fetchError
+from .utils.fetch import get_daily_adjusted, fetchError, get_yahoo_finance_price
 from .utils.util import missing_ticker
 from .db.db import Db
 from .db.write import bulk_save, insert_onebyone, writeError, foundDup
@@ -86,14 +86,16 @@ def update(type, today_only, index_name, fix=False):
     Report.__table__.create(s.get_bind(), checkfirst=True)
     Holding.__table__.create(s.get_bind(), checkfirst=True)
     Transaction.__table__.create(s.get_bind(), checkfirst=True)
-    
+
     if has_index(s) == None:
         bulk_save(s, map_index(index_name))
     tickerL = read_ticker(s)
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
+
     for ticker in tickerL:
-    # for ticker in ['000001.SZ']: # Fast fix a ticker
+    # for ticker in  [s for s in tickerL if "SH" in s]:
+    # for ticker in ['600848.SH']: # Fast fix a ticker
         try:
             if (fix == 'fastfix'): # Fast Update, bulk
                 df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
@@ -104,15 +106,25 @@ def update(type, today_only, index_name, fix=False):
                 logger.info("--> %s" % ticker)
                 bulk_save(s, model_list)
             elif (fix == 'slowfix'): # Slow Update, one by one based on log.log
-                df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
+                # 1st Yahoo Finance
+                try:
+                    df = get_yahoo_finance_price(ticker, today_only=False)
+                # 2nd Tushare
+                except fetchError as e:
+                    df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
                 model_list = []
                 for index, row in df.iterrows():
                     model = map_fix_quote(row, ticker)
                     model_list.append(model)
-                logger.info("--> %s" % ticker)
                 insert_onebyone(s, model_list)
+                logger.info("--> %s" % ticker)
             else:
-                df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
+                # 1st Yahoo Finance
+                try:
+                    df = get_yahoo_finance_price(ticker, today_only=True)
+                # 2nd Tushare
+                except fetchError as e:
+                    df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
                 model_list = map_quote(df, ticker)
                 bulk_save(s, model_list)
                 logger.info("--> %s" % ticker)

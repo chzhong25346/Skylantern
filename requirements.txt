@@ -1,4 +1,4 @@
-tushare==1.2.48
+tushare==1.2.64
 stockstats==0.3.0
 eiapy==0.1.4
 SQLAlchemy==1.2.7

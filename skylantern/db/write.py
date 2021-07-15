@@ -27,10 +27,11 @@ def insert_onebyone(session, model_list):
             session.commit()
         except Exception as e:
             session.rollback()
-            if idx > 0:
-                raise foundDup('%s row(s) written' % str(idx))
-            else:
-                raise foundDup('Found duplicate')
+            pass
+            # if idx > 0:
+            #     raise foundDup('%s row(s) written' % str(idx))
+            # else:
+            #     raise foundDup('Found duplicate')
 
 
 class writeError(Exception):

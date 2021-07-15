@@ -21,7 +21,7 @@ def map_index(index_name):
 def map_quote(df, ticker):
     df_records = df.to_dict('records')
     model_instnaces = [Quote(
-        id = gen_id(ticker+str(record['date'])),
+        id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
         symbol = ticker,
         date = record['date'],
         open = record['open'],
@@ -36,7 +36,7 @@ def map_quote(df, ticker):
 
 def map_fix_quote(sr, ticker):
     model_instance = Quote(
-        id = gen_id(ticker+str(sr['date'])),
+        id = gen_id(ticker+str(dt.datetime.strptime(sr['date'], "%Y-%m-%d"))),
         symbol = ticker,
         date = sr['date'],
         open = sr['open'],
