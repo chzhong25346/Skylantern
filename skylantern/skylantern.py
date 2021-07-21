@@ -93,9 +93,9 @@ def update(type, today_only, index_name, fix=False):
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
 
-    # for ticker in tickerL:
+    for ticker in tickerL:
     # for ticker in  [s for s in tickerL if "SH" in s]:
-    for ticker in tickerL[tickerL.index('600816.SH'):]: # Fast fix a ticker
+    # for ticker in tickerL[tickerL.index('600816.SH'):]: # Fast fix a ticker
         try:
             if (fix == 'fastfix'): # Fast Update, bulk
                 df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
