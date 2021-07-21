@@ -3,7 +3,7 @@ from .utils.fetch import get_daily_adjusted, fetchError, get_yahoo_finance_price
 from .utils.util import missing_ticker
 from .db.db import Db
 from .db.write import bulk_save, insert_onebyone, writeError, foundDup
-from .db.mapping import map_index, map_quote, map_fix_quote, map_report
+from .db.mapping import map_index, map_quote, map_fix_quote, map_report, mappingError
 from .db.read import read_ticker, has_index
 from .report.report import report
 from .simulation.simulator import simulator
@@ -125,12 +125,14 @@ def update(type, today_only, index_name, fix=False):
                 # 2nd Tushare
                 except fetchError as e:
                     df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
-                try:
-                    model_list = map_quote(df, ticker)
-                    bulk_save(s, model_list)
-                    logger.info("--> %s" % ticker)
-                except:
-                    logger.info("--> (%s)" % ticker)
+                # try:
+                model_list = map_quote(df, ticker)
+                bulk_save(s, model_list)
+                logger.info("--> %s" % ticker)
+                # except:
+                #     logger.info("--> (%s)" % ticker)
+        except mappingError as e:
+            logger.error("%s - (%s,%s)" % (e.value, index_name, ticker))
         except writeError as e:
             logger.error("%s - (%s,%s)" % (e.value, index_name, ticker))
         except foundDup as e:

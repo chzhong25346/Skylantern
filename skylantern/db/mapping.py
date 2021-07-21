@@ -20,33 +20,39 @@ def map_index(index_name):
 
 def map_quote(df, ticker):
     df_records = df.to_dict('records')
-    model_instnaces = [Quote(
-        id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
-        symbol = ticker,
-        date = record['date'],
-        open = record['open'],
-        high = record['high'],
-        low = record['low'],
-        close = record['close'],
-        volume = record['volume']
-    ) for record in df_records]
+    try:
+        model_instnaces = [Quote(
+            id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
+            symbol = ticker,
+            date = record['date'],
+            open = record['open'],
+            high = record['high'],
+            low = record['low'],
+            close = record['close'],
+            volume = record['volume']
+        ) for record in df_records]
 
-    return model_instnaces
+        return model_instnaces
+    except:
+        raise mappingError('Mapping failed')
 
 
 def map_fix_quote(sr, ticker):
-    model_instance = Quote(
-        id = gen_id(ticker+str(dt.datetime.strptime(sr['date'], "%Y-%m-%d"))),
-        symbol = ticker,
-        date = sr['date'],
-        open = sr['open'],
-        high = sr['high'],
-        low = sr['low'],
-        close = sr['close'],
-        volume = sr['volume']
-        )
-    return model_instance
-
+    try:
+        model_instance = Quote(
+            id = gen_id(ticker+str(dt.datetime.strptime(sr['date'], "%Y-%m-%d"))),
+            symbol = ticker,
+            date = sr['date'],
+            open = sr['open'],
+            high = sr['high'],
+            low = sr['low'],
+            close = sr['close'],
+            volume = sr['volume']
+            )
+        return model_instance
+    except:
+        raise mappingError('Mapping failed')
+        
 
 def map_report(config,df):
     date = dt.datetime.today().strftime("%Y-%m-%d")
@@ -131,3 +137,10 @@ def map_eia_storage(df, sid):
     logger.info('Mapping completed.')
 
     return model_instnaces
+
+
+class mappingError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
