@@ -93,9 +93,9 @@ def update(type, today_only, index_name, fix=False):
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
 
-    for ticker in tickerL:
+    # for ticker in tickerL:
     # for ticker in  [s for s in tickerL if "SH" in s]:
-    # for ticker in ['600848.SH']: # Fast fix a ticker
+    for ticker in tickerL[tickerL.index('600816.SH'):]: # Fast fix a ticker
         try:
             if (fix == 'fastfix'): # Fast Update, bulk
                 df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
@@ -125,10 +125,12 @@ def update(type, today_only, index_name, fix=False):
                 # 2nd Tushare
                 except fetchError as e:
                     df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
-                model_list = map_quote(df, ticker)
-                bulk_save(s, model_list)
-                logger.info("--> %s" % ticker)
-
+                try:
+                    model_list = map_quote(df, ticker)
+                    bulk_save(s, model_list)
+                    logger.info("--> %s" % ticker)
+                except:
+                    logger.info("--> (%s)" % ticker)
         except writeError as e:
             logger.error("%s - (%s,%s)" % (e.value, index_name, ticker))
         except foundDup as e:
