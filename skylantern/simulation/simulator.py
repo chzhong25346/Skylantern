@@ -22,7 +22,7 @@ def simulator(s):
     buy_in = buy_list(df_report)
     # SELL list
     sell_out = sell_list(df_report)
-    buy_in = {'600871.SH':1.99}
+    # buy_in = {'600871.SH':1.99}
     # BUY Order
     if buy_in:
         quote_list = get_quote(buy_in, s)
