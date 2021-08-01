@@ -9,7 +9,7 @@ import logging
 from ..db.mapping import map_transaction, map_holding
 from ..db.write import bulk_save
 from ..models import Transaction, Holding
-from ..utils.fetch import get_yahoo_finance_price, get_yahoo_bvps, get_yahoo_cr
+from ..utils.fetch import get_yahoo_bvps, get_yahoo_cr
 logger = logging.getLogger('main.trade')
 
 

@@ -22,7 +22,8 @@ def map_quote(df, ticker):
     df_records = df.to_dict('records')
     try:
         model_instnaces = [Quote(
-            id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
+            id = gen_id(ticker+str(record['date'])),
+
             symbol = ticker,
             date = record['date'],
             open = record['open'],
@@ -33,6 +34,18 @@ def map_quote(df, ticker):
         ) for record in df_records]
 
         return model_instnaces
+    except TypeError:
+        model_instance = Quote(
+            id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
+            symbol = ticker,
+            date = record['date'],
+            open = record['open'],
+            high = record['high'],
+            low = record['low'],
+            close = record['close'],
+            volume = record['volume']
+            )
+        return model_instance
     except:
         raise mappingError('Mapping failed')
 
@@ -50,9 +63,21 @@ def map_fix_quote(sr, ticker):
             volume = sr['volume']
             )
         return model_instance
+    except TypeError:
+        model_instance = Quote(
+            id = gen_id(ticker+str(sr['date'])),
+            symbol = ticker,
+            date = sr['date'],
+            open = sr['open'],
+            high = sr['high'],
+            low = sr['low'],
+            close = sr['close'],
+            volume = sr['volume']
+            )
+        return model_instance
     except:
         raise mappingError('Mapping failed')
-        
+
 
 def map_report(config,df):
     date = dt.datetime.today().strftime("%Y-%m-%d")

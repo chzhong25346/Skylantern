@@ -93,6 +93,7 @@ def update(type, today_only, index_name, fix=False):
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
 
+    # tickerL = ['601857.SH']
     for ticker in tickerL:
     # for ticker in  [s for s in tickerL if "SH" in s]:
     # for ticker in tickerL[tickerL.index('600816.SH'):]: # Fast fix a ticker
@@ -105,32 +106,34 @@ def update(type, today_only, index_name, fix=False):
                     model_list.append(model)
                 logger.info("--> %s" % ticker)
                 bulk_save(s, model_list)
+            ##### Slow fix
             elif (fix == 'slowfix'): # Slow Update, one by one based on log.log
-                # 1st Yahoo Finance
+                # 1st Tushare
                 try:
-                    df = get_yahoo_finance_price(ticker, today_only=False)
-                # 2nd Tushare
-                except fetchError as e:
                     df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
+                # 2nd Yahoo
+                except fetchError as e:
+                    df = get_yahoo_finance_price(ticker, today_only)
                 model_list = []
                 for index, row in df.iterrows():
                     model = map_fix_quote(row, ticker)
                     model_list.append(model)
                 insert_onebyone(s, model_list)
                 logger.info("--> %s" % ticker)
+            ###### Daily update
             else:
                 # 1st Yahoo Finance
                 try:
-                    df = get_yahoo_finance_price(ticker, today_only=True)
+                    df = get_yahoo_finance_price(ticker, today_only)
                 # 2nd Tushare
                 except fetchError as e:
                     df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
-                # try:
-                model_list = map_quote(df, ticker)
-                bulk_save(s, model_list)
-                logger.info("--> %s" % ticker)
-                # except:
-                #     logger.info("--> (%s)" % ticker)
+                try:
+                    model_list = map_quote(df, ticker)
+                    bulk_save(s, model_list)
+                    logger.info("--> %s" % ticker)
+                except:
+                    logger.info("--> (%s)" % ticker)
         except mappingError as e:
             logger.error("%s - (%s,%s)" % (e.value, index_name, ticker))
         except writeError as e:
@@ -140,7 +143,7 @@ def update(type, today_only, index_name, fix=False):
         except fetchError as e:
             logger.error("%s - (%s,%s)" % (e.value, index_name, ticker))
         except:
-            logger.error("Updating failed - (index_name,%s)" % (index_name,ticker))
+            logger.error("Updating failed - (%s,%s)" % (index_name,ticker))
     s.close()
 
 
