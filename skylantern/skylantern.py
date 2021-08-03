@@ -93,7 +93,7 @@ def update(type, today_only, index_name, fix=False):
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
 
-    tickerL = ['601236.SH']
+    # tickerL = ['601236.SH']
     for ticker in tickerL:
     # for ticker in  [s for s in tickerL if "SH" in s]:
     # for ticker in tickerL[tickerL.index('600816.SH'):]: # Fast fix a ticker
