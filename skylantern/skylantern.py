@@ -159,8 +159,12 @@ def analyze(index_name):
     Holding.__table__.create(s.get_bind(), checkfirst=True)
     Transaction.__table__.create(s.get_bind(), checkfirst=True)
     df = report(s)
-    model_list = map_report(Config,df)  ####CHECKPOINT
-    bulk_save(s, model_list)  ####CHECKPOINT
+    model_list = map_report(Config, df)  ####CHECKPOINT
+    try:
+        insert_onebyone(s, model_list)
+    except:
+        pass
+    # bulk_save(s, model_list)  ####CHECKPOINT
     s.close()
 
 

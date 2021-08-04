@@ -40,6 +40,8 @@ def bolling(ticker, df):
     # EMA5; EMA5 MUST within BB; Bollinger Band Squeeze
     ema5 = ema(df,5)
     today_ema5 = ema5.loc[df.index.max()]
+    # print(ema5[ema5.index.duplicated()])
+    # print(ema5)
     df_cross = pd.concat([ema5, boll], axis=1).dropna().rename(columns={"close": "ema5"})
     if today_ema5 > today_boll:
         df_cross['is_crossed'] = df_cross['ema5'] < df_cross['boll']
