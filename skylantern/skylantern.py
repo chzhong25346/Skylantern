@@ -93,10 +93,10 @@ def update(type, today_only, index_name, fix=False):
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
 
-    # tickerL = ['000001.SZ']
+    # tickerL = ['600369.SH']
     for ticker in tickerL:
     # for ticker in  [s for s in tickerL if "SH" in s]:
-    # for ticker in tickerL[tickerL.index('600816.SH'):]: # Fast fix a ticker
+    # for ticker in tickerL[tickerL.index('600482.SH'):]: # Fast fix a ticker
         try:
             if (fix == 'fastfix'): # Fast Update, bulk
                 df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
@@ -122,14 +122,14 @@ def update(type, today_only, index_name, fix=False):
                 logger.info("--> %s" % ticker)
             ###### Daily update
             else:
-                # 1st Yahoo Finance
+                # 1st Yahoo
                 try:
                     df = get_yahoo_finance_price(ticker, today_only)
                     model_list = map_quote(df, ticker)
                     bulk_save(s, model_list)
                     logger.info("--> %s" % ticker)
                 # 2nd Tushare
-                except foundDup as e:
+                except:
                     df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
                     model_list = map_quote(df, ticker)
                     bulk_save(s, model_list)

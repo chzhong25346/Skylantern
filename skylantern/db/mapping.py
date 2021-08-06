@@ -36,7 +36,8 @@ def map_quote(df, ticker):
         return model_instnaces
     except TypeError:
         model_instance = Quote(
-            id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
+            # id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
+            id = gen_id(ticker+str(record['date'])),
             symbol = ticker,
             date = record['date'],
             open = record['open'],

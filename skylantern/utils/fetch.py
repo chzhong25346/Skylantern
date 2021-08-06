@@ -37,6 +37,7 @@ def get_daily_adjusted(config,ticker, type, today_only, index_name):
             df.drop(["pre_close","change","pct_chg","amount"], axis=1, inplace=True)
             df.rename(columns={"ts_code": "symbol", "trade_date": "date", "vol": "volume"}, inplace=True)
             df['date'] = pd.to_datetime(df['date'])
+            df['date'] = df['date'].apply(lambda x: x.strftime('%Y-%m-%d'))
             if today_only:
                 return df.loc[df.index.min()].to_frame().T # the latest quote
             return df
