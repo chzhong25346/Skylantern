@@ -36,7 +36,7 @@ def main(argv):
             print('run.py -s <csi300>')
             print('run.py -e')
             sys.exit()
-        elif (opt == '-u' and len(argv) != 3):
+        elif (opt == '-u' and len(argv) < 3):
             print('run.py -u <full|compact|fastfix|slowfix>  <csi300>')
             sys.exit()
         elif opt in ("-u", "--update"):
@@ -59,7 +59,7 @@ def main(argv):
                 index_name = argv[2]
                 type = 'full' # fixing requires full data
                 today_only = False
-                update(type, today_only, index_name, fix='fastfix')  # Compact update for today
+                update(type, today_only, index_name, fix='fastfix', ticker=argv[3])  # Compact update for today
         elif opt in ("-r", "--report"):  # Report
             index_name = argv[1]
             analyze(index_name)
@@ -73,7 +73,7 @@ def main(argv):
     logger.info("%s took %d minutes to run" % ( (',').join(argv), elapsed ) )
 
 
-def update(type, today_only, index_name, fix=False):
+def update(type, today_only, index_name, fix=False,  ticker=None):
     logger.info('Run Task:[%s %s UPDATE]' % (index_name, type))
     Config.DB_NAME=index_name
     db = Db(Config)
@@ -90,8 +90,11 @@ def update(type, today_only, index_name, fix=False):
     if has_index(s) == None:
         bulk_save(s, map_index(index_name))
     tickerL = read_ticker(s)
+
     if (fix == 'slowfix'):
         tickerL = missing_ticker(index_name)
+    elif (fix == 'fastfix'):
+        tickerL = [ticker]
 
     # tickerL = ['600369.SH']
     for ticker in tickerL:

@@ -22,8 +22,9 @@ def report(s):
     columns=['symbol','yr_high','yr_low','downtrend','uptrend','high_volume','rsi','macd','bolling']
     dtypes =['str','int','int','int','int','int','str','str','str']
     report_df = df_empty(columns, dtypes)
+    # for symbol in tickerL[tickerL.index('603986.SH'):]: # Fast fix a ticker
     for symbol in tickerL:
-        print(symbol)
+        # print(symbol)
         # read daily db return df in random order
         df = pd.read_sql(s.query(Quote).filter(Quote.symbol == symbol).statement, s.bind, index_col='date')
         # sort by old to new
