@@ -84,6 +84,7 @@ def get_yahoo_finance_price(ticker, today_only):
                 df = pd.DataFrame(data, columns=['date', 'close', 'volume', 'open', 'high', 'low'])
                 df['date']  = df['date'].apply(lambda x: dt.fromtimestamp(x).strftime("%Y-%m-%d")).dropna()
                 df['volume'] = df['volume'] // 100
+                print(df)
                 return df
     except Exception as e:
         raise fetchError('Fetching failed')

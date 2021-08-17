@@ -96,7 +96,7 @@ def update(type, today_only, index_name, fix=False,  ticker=None):
     elif (fix == 'fastfix'):
         tickerL = [ticker]
 
-    # tickerL = ['600369.SH']
+    # tickerL = ['000001.SZ']
     for ticker in tickerL:
     # for ticker in  [s for s in tickerL if "SH" in s]:
     # for ticker in tickerL[tickerL.index('600482.SH'):]: # Fast fix a ticker
@@ -113,6 +113,7 @@ def update(type, today_only, index_name, fix=False,  ticker=None):
             elif (fix == 'slowfix'): # Slow Update, one by one based on log.log
                 # 1st Tushare
                 try:
+                    # df = get_yahoo_finance_price(ticker, today_only)
                     df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
                 # 2nd Yahoo
                 except fetchError as e:
@@ -125,15 +126,17 @@ def update(type, today_only, index_name, fix=False,  ticker=None):
                 logger.info("--> %s" % ticker)
             ###### Daily update
             else:
-                # 1st Yahoo
+                # 1st Tushare
                 try:
-                    df = get_yahoo_finance_price(ticker, today_only)
+                    # df = get_yahoo_finance_price(ticker, today_only)
+                    df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
                     model_list = map_quote(df, ticker)
                     bulk_save(s, model_list)
                     logger.info("--> %s" % ticker)
-                # 2nd Tushare
+                # 2nd Yahoo
                 except:
-                    df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
+                    df = get_yahoo_finance_price(ticker, today_only)
+                    # df = get_daily_adjusted(Config,ticker,type,today_only,index_name)
                     model_list = map_quote(df, ticker)
                     bulk_save(s, model_list)
                     logger.info("2--> %s" % ticker)

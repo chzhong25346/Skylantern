@@ -22,8 +22,8 @@ def map_quote(df, ticker):
     df_records = df.to_dict('records')
     try:
         model_instnaces = [Quote(
-            id = gen_id(ticker+str(record['date'])),
-
+            # id = gen_id(ticker+str(record['date'])),
+            id = gen_id(ticker+str(dt.datetime.strptime(record['date'], "%Y-%m-%d"))),
             symbol = ticker,
             date = record['date'],
             open = record['open'],
