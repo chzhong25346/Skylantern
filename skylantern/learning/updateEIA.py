@@ -48,6 +48,7 @@ def updateEIA(s):
 def fetchEIA(series_ID, update=True):
     try:
         sr = Series(series_ID)
+        print(sr)
         if update:
             data = sr.last(20)['series'][0]['data']
         else:
