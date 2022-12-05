@@ -1,6 +1,6 @@
 tushare==1.2.64
 stockstats==0.3.0
-eiapy==0.1.5
+eiapy==0.1.6
 SQLAlchemy==1.2.7
 pandas==0.23.4
 numpy==1.16.0
