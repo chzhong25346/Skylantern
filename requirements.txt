@@ -1,11 +1,12 @@
-tushare==1.2.89
-stockstats==0.3.2
-eiapy==0.1.6
+tushare
+stockstats
+eiapy
 SQLAlchemy==1.4.44
 Pandas==1.5.3
 numpy==1.24.3
 lxml==5.4.0
-beautifulsoup4==4.6.0
+beautifulsoup4==4.11.1
 mysqlclient
 int-date==0.1.8
-requests==2.28.1
+requests
+yfinance==1.4.1
